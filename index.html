@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>La Organización y las Personas | Colegio Montano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   1. VARIABLES CENTRALIZADAS (IDENTIDAD INSTITUCIONAL MONTANO)
+   ============================================================ */
+:root{
+  --azul-principal:#1F3C88;
+  --azul-secundario:#3F72AF;
+  --blanco:#FFFFFF;
+  --amarillo:#F2C94C;
+  --fondo-suave:#F4F7FC;
+  --fondo-suave-2:#F8FAFC;
+  --texto-principal:#2C3E50;
+  --correcto:#27AE60;
+  --incorrecto:#EB5757;
+  --correcto-bg:#E9F9EF;
+  --incorrecto-bg:#FDECEC;
+  --radio:16px;
+  --radio-sm:10px;
+  --sombra: 0 10px 30px rgba(31,60,136,0.12);
+  --sombra-suave: 0 4px 14px rgba(31,60,136,0.08);
+  --fuente-titulo:'Poppins', sans-serif;
+  --fuente-cuerpo:'Inter', sans-serif;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+html,body{
+  height:100%;
+  font-family:var(--fuente-cuerpo);
+  color:var(--texto-principal);
+  background:linear-gradient(160deg, var(--fondo-suave) 0%, #E7EDF9 100%);
+  -webkit-font-smoothing:antialiased;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+h1,h2,h3,h4{ font-family:var(--fuente-titulo); color:var(--azul-principal); line-height:1.25; }
+
+p{ line-height:1.7; margin-bottom:12px; font-size:1rem; }
+
+::selection{ background:var(--amarillo); color:var(--azul-principal); }
+
+/* ============================================================
+   2. CONTENEDOR PRINCIPAL TIPO APP
+   ============================================================ */
+.app{
+  width:100%;
+  max-width:1020px;
+  height:85vh;
+  min-height:650px;
+  background:var(--blanco);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ---- Barra superior de progreso ---- */
+.topbar{
+  padding:14px 24px 10px;
+  border-bottom:1px solid #EDF1F9;
+  background:var(--blanco);
+  flex-shrink:0;
+}
+.topbar-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand-logo{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,var(--azul-principal),var(--azul-secundario));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--amarillo); font-family:var(--fuente-titulo); font-weight:800; font-size:1rem;
+  flex-shrink:0;
+}
+.brand-text{ font-size:0.78rem; color:#7C8AA5; line-height:1.2; }
+.brand-text strong{ color:var(--azul-principal); font-family:var(--fuente-titulo); font-size:0.85rem; display:block;}
+
+.chapter-counter{
+  font-size:0.82rem;
+  font-weight:600;
+  color:var(--azul-secundario);
+  background:var(--fondo-suave);
+  padding:6px 14px;
+  border-radius:20px;
+  white-space:nowrap;
+}
+
+.progress-track{
+  width:100%;
+  height:8px;
+  background:var(--fondo-suave);
+  border-radius:20px;
+  overflow:hidden;
+  position:relative;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--azul-secundario),var(--azul-principal));
+  border-radius:20px;
+  transition:width .45s ease;
+  position:relative;
+}
+.progress-percent{
+  position:absolute;
+  right:0;
+  top:-22px;
+  font-size:0.72rem;
+  font-weight:700;
+  color:var(--azul-principal);
+}
+
+/* ---- Dots de navegación ---- */
+.dots{
+  display:flex;
+  gap:6px;
+  justify-content:center;
+  padding:10px 10px 0;
+  flex-wrap:wrap;
+  flex-shrink:0;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#D7DEEC;
+  border:none;
+  cursor:pointer;
+  transition:all .25s ease;
+  padding:0;
+}
+.dot:hover{ background:var(--azul-secundario); transform:scale(1.2); }
+.dot.active{ background:var(--azul-principal); width:26px; border-radius:6px; }
+.dot.done{ background:var(--amarillo); }
+
+/* ============================================================
+   3. SLIDES / DIAPOSITIVAS
+   ============================================================ */
+.slides-viewport{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  padding:22px 30px 20px;
+  overflow-y:auto;
+  opacity:0;
+  transform:translateX(30px);
+  pointer-events:none;
+  transition:opacity .4s ease, transform .4s ease;
+}
+.slide.active{
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
+}
+.slide.prev{
+  transform:translateX(-30px);
+}
+
+/* Scrollbar discreto */
+.slide::-webkit-scrollbar{ width:7px; }
+.slide::-webkit-scrollbar-track{ background:transparent; }
+.slide::-webkit-scrollbar-thumb{ background:#C9D5EA; border-radius:10px; }
+.slide::-webkit-scrollbar-thumb:hover{ background:var(--azul-secundario); }
+.slide{ scrollbar-width:thin; scrollbar-color:#C9D5EA transparent; }
+
+.slide-eyebrow{
+  display:inline-block;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--azul-secundario);
+  background:var(--fondo-suave);
+  padding:5px 12px;
+  border-radius:20px;
+  margin-bottom:12px;
+}
+.slide h2.slide-title{ font-size:1.55rem; margin-bottom:6px; }
+.slide .slide-subtitle{ color:#7C8AA5; font-size:0.95rem; margin-bottom:18px; }
+
+/* ---- Componentes editoriales ---- */
+.box{
+  border-radius:var(--radio-sm);
+  padding:16px 18px;
+  margin:16px 0;
+  border-left:5px solid var(--azul-secundario);
+  background:var(--fondo-suave-2);
+}
+.box-title{
+  font-family:var(--fuente-titulo);
+  font-weight:700;
+  font-size:0.88rem;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:6px;
+  color:var(--azul-principal);
+}
+.box p:last-child{ margin-bottom:0; }
+
+.box.nota{ border-left-color:var(--azul-secundario); background:#EEF3FC; }
+.box.dato{ border-left-color:var(--amarillo); background:#FEF9EC; }
+.box.dato .box-title{ color:#8A6D1D; }
+.box.ejemplo{ border-left-color:var(--correcto); background:var(--correcto-bg); }
+.box.ejemplo .box-title{ color:#1E7A45; }
+.box.glosario{ border-left-color:var(--azul-principal); background:#EAF0FB; }
+
+.termino{
+  font-weight:700;
+  color:var(--azul-principal);
+  border-bottom:2px dotted var(--amarillo);
+  cursor:help;
+  position:relative;
+}
+
+/* Tarjeta "clic para profundizar" */
+.flip-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+  gap:14px;
+  margin:18px 0;
+}
+.flip-card{
+  background:var(--fondo-suave-2);
+  border:1px solid #E4EAF6;
+  border-radius:var(--radio-sm);
+  padding:16px;
+  cursor:pointer;
+  transition:box-shadow .25s ease, transform .2s ease;
+  min-height:100px;
+}
+.flip-card:hover{ box-shadow:var(--sombra-suave); transform:translateY(-2px); }
+.flip-card-front{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-family:var(--fuente-titulo); font-weight:600; color:var(--azul-principal); font-size:0.95rem;
+}
+.flip-card-front .icon{ font-size:1.3rem; flex-shrink:0; }
+.flip-card-back{
+  display:none;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px dashed #C9D5EA;
+  font-size:0.88rem;
+  color:var(--texto-principal);
+  line-height:1.55;
+}
+.flip-card.open .flip-card-back{ display:block; }
+.flip-card .chevron{ transition:transform .25s ease; color:var(--azul-secundario); }
+.flip-card.open .chevron{ transform:rotate(180deg); }
+
+/* Botonera general */
+.btn{
+  font-family:var(--fuente-cuerpo);
+  font-weight:600;
+  font-size:0.9rem;
+  border:none;
+  border-radius:10px;
+  padding:12px 20px;
+  min-height:44px;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease, box-shadow .2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn:active{ transform:scale(0.97); }
+.btn-primary{ background:var(--azul-principal); color:var(--blanco); }
+.btn-primary:hover{ background:#16306e; }
+.btn-secondary{ background:var(--fondo-suave); color:var(--azul-principal); }
+.btn-secondary:hover{ background:#E4EAF6; }
+.btn-accent{ background:var(--amarillo); color:#5c4400; }
+.btn-accent:hover{ background:#e0b93a; }
+.btn:disabled{ opacity:0.45; cursor:not-allowed; }
+
+textarea.reflexion{
+  width:100%;
+  min-height:110px;
+  border-radius:var(--radio-sm);
+  border:1.5px solid #D7DEEC;
+  padding:14px;
+  font-family:var(--fuente-cuerpo);
+  font-size:0.95rem;
+  color:var(--texto-principal);
+  resize:vertical;
+  transition:border-color .2s ease;
+}
+textarea.reflexion:focus{ outline:none; border-color:var(--azul-secundario); }
+
+/* Opción múltiple */
+.pregunta-block{
+  background:var(--fondo-suave-2);
+  border:1px solid #E4EAF6;
+  border-radius:var(--radio-sm);
+  padding:18px;
+  margin:18px 0;
+}
+.pregunta-enunciado{ font-weight:600; color:var(--azul-principal); margin-bottom:12px; font-size:0.98rem; }
+.opciones{ display:flex; flex-direction:column; gap:9px; }
+.opcion{
+  text-align:left;
+  background:var(--blanco);
+  border:1.5px solid #D7DEEC;
+  border-radius:10px;
+  padding:12px 14px;
+  min-height:44px;
+  cursor:pointer;
+  font-size:0.92rem;
+  font-family:var(--fuente-cuerpo);
+  color:var(--texto-principal);
+  transition:all .18s ease;
+}
+.opcion:hover{ border-color:var(--azul-secundario); background:#F5F8FE; }
+.opcion.correcta{ border-color:var(--correcto); background:var(--correcto-bg); color:#1E7A45; font-weight:600; }
+.opcion.incorrecta{ border-color:var(--incorrecto); background:var(--incorrecto-bg); color:#B03434; font-weight:600; }
+.opcion.disabled{ pointer-events:none; opacity:0.65; }
+.opcion.disabled.correcta, .opcion.disabled.incorrecta{ opacity:1; }
+
+.feedback-box{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:10px;
+  font-size:0.9rem;
+  line-height:1.6;
+  display:none;
+}
+.feedback-box.show{ display:block; animation:fadeIn .3s ease; }
+.feedback-box.ok{ background:var(--correcto-bg); color:#1E7A45; border-left:4px solid var(--correcto); }
+.feedback-box.bad{ background:var(--incorrecto-bg); color:#B03434; border-left:4px solid var(--incorrecto); }
+.feedback-box.info{ background:#EAF0FB; color:var(--azul-principal); border-left:4px solid var(--azul-secundario); }
+
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+
+.retry-btn{ margin-top:10px; }
+
+/* Matriz / tabla interactiva */
+.matriz{
+  width:100%;
+  border-collapse:collapse;
+  margin:16px 0;
+  font-size:0.88rem;
+}
+.matriz th, .matriz td{
+  border:1px solid #E4EAF6;
+  padding:10px;
+  text-align:left;
+  vertical-align:top;
+}
+.matriz th{
+  background:var(--azul-principal);
+  color:var(--blanco);
+  font-family:var(--fuente-titulo);
+  font-weight:600;
+  font-size:0.82rem;
+}
+.matriz td.cell-clickable{
+  cursor:pointer;
+  transition:background .2s ease;
+  position:relative;
+}
+.matriz td.cell-clickable:hover{ background:#F0F5FE; }
+.matriz td.cell-clickable.revealed{ background:var(--fondo-suave-2); color:var(--texto-principal); font-style:normal; }
+.matriz td.cell-clickable:not(.revealed)::after{
+  content:"👆 Toca para revelar";
+  font-size:0.72rem;
+  color:#A9B6CE;
+  font-style:italic;
+}
+
+.lab-progress{
+  margin-top:16px;
+  font-size:0.85rem;
+  color:var(--azul-secundario);
+  font-weight:600;
+}
+.lab-conclusion{
+  display:none;
+  margin-top:18px;
+}
+.lab-conclusion.show{ display:block; animation:fadeIn .4s ease; }
+
+/* Checklist autoevaluación */
+.checklist{ display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.check-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  background:var(--fondo-suave-2);
+  border:1px solid #E4EAF6;
+  border-radius:10px;
+  padding:12px 14px;
+  cursor:pointer;
+  transition:background .2s ease;
+}
+.check-item:hover{ background:#EEF3FC; }
+.check-item input{ width:20px; height:20px; margin-top:2px; accent-color:var(--correcto); flex-shrink:0; cursor:pointer; }
+.check-item span{ font-size:0.92rem; line-height:1.5; }
+.check-item.checked span{ color:#7C8AA5; text-decoration:line-through; }
+
+/* Ficha técnica portada */
+.ficha-tecnica{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin-top:22px;
+}
+.ficha-item{
+  background:var(--fondo-suave-2);
+  border-radius:12px;
+  padding:14px;
+  text-align:center;
+  border:1px solid #E4EAF6;
+}
+.ficha-item .icon{ font-size:1.5rem; margin-bottom:6px; }
+.ficha-item .label{ font-size:0.7rem; text-transform:uppercase; letter-spacing:0.04em; color:#7C8AA5; font-weight:700; }
+.ficha-item .value{ font-size:0.85rem; color:var(--azul-principal); font-weight:700; margin-top:2px; }
+
+.portada-header{
+  text-align:center;
+  padding:14px 0 6px;
+}
+.portada-header .institucion{
+  font-size:0.85rem; color:var(--azul-secundario); font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+}
+.portada-header h2.slide-title{ font-size:2rem; margin:10px 0 8px; }
+.portada-header .materia-badge{
+  display:inline-flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:10px;
+}
+.materia-badge span{
+  background:var(--azul-principal); color:var(--blanco); font-size:0.72rem; font-weight:700;
+  padding:5px 12px; border-radius:20px;
+}
+.materia-badge span.amarillo{ background:var(--amarillo); color:#5c4400; }
+
+.competencias-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+  margin:16px 0;
+}
+.competencia-card{
+  border-radius:var(--radio-sm);
+  padding:16px;
+  background:var(--fondo-suave-2);
+  border-top:4px solid var(--azul-secundario);
+}
+.competencia-card h4{ font-size:0.95rem; margin-bottom:8px; }
+.competencia-card ul{ padding-left:18px; font-size:0.88rem; line-height:1.6; }
+
+.pregunta-central{
+  background:linear-gradient(135deg,var(--azul-principal),var(--azul-secundario));
+  color:var(--blanco);
+  padding:20px 22px;
+  border-radius:var(--radio-sm);
+  margin-top:18px;
+  font-family:var(--fuente-titulo);
+  font-weight:600;
+  font-size:1.05rem;
+  text-align:center;
+  line-height:1.5;
+}
+
+/* Resumen ejecutivo */
+.resumen-lista{ list-style:none; margin:16px 0; display:flex; flex-direction:column; gap:10px; }
+.resumen-lista li{
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--fondo-suave-2); border-radius:10px; padding:12px 14px; border:1px solid #E4EAF6;
+}
+.resumen-lista .numero{
+  background:var(--azul-principal); color:var(--blanco); font-family:var(--fuente-titulo); font-weight:700;
+  width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.82rem;
+}
+
+.cierre-institucional{
+  margin-top:20px;
+  text-align:center;
+  padding:20px;
+  background:linear-gradient(135deg,var(--azul-principal),var(--azul-secundario));
+  border-radius:var(--radio-sm);
+  color:var(--blanco);
+}
+.cierre-institucional p{ margin:0; font-family:var(--fuente-titulo); font-weight:600; font-size:1rem; }
+.cierre-institucional .firma{ margin-top:8px; font-size:0.8rem; opacity:0.85; font-family:var(--fuente-cuerpo); font-weight:400;}
+
+/* Score final */
+.score-panel{
+  text-align:center;
+  padding:22px;
+  border-radius:var(--radio-sm);
+  background:var(--fondo-suave-2);
+  margin-top:16px;
+  display:none;
+}
+.score-panel.show{ display:block; animation:fadeIn .4s ease; }
+.score-panel .score-num{ font-family:var(--fuente-titulo); font-size:2.4rem; font-weight:800; color:var(--azul-principal); }
+.score-panel .score-label{ font-size:0.85rem; color:#7C8AA5; margin-bottom:10px; }
+
+/* ---- Controles inferiores ---- */
+.controls{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 24px;
+  border-top:1px solid #EDF1F9;
+  flex-shrink:0;
+  background:var(--blanco);
+  gap:10px;
+}
+.controls .hint-key{
+  font-size:0.72rem;
+  color:#A9B6CE;
+  display:none;
+}
+@media (min-width:700px){
+  .controls .hint-key{ display:block; }
+}
+
+/* ============================================================
+   4. RESPONSIVIDAD
+   ============================================================ */
+@media (max-width:700px){
+  body{ padding:0; }
+  .app{ height:100vh; min-height:100vh; border-radius:0; max-width:100%; }
+  .slide{ padding:18px 18px 16px; }
+  .topbar{ padding:12px 16px 8px; }
+  .controls{ padding:12px 16px; }
+  .portada-header h2.slide-title{ font-size:1.5rem; }
+  .btn{ padding:10px 16px; font-size:0.85rem; }
+  .brand-text{ display:none; }
+}
+
+@media (max-width:420px){
+  .chapter-counter{ font-size:0.72rem; padding:5px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ============================================================
+       BARRA SUPERIOR: MARCA, CONTADOR Y PROGRESO
+       ============================================================ -->
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <div class="brand-logo">CM</div>
+        <div class="brand-text">
+          <strong>Colegio Montano</strong>
+          Organización · Unidad 4
+        </div>
+      </div>
+      <div class="chapter-counter" id="chapterCounter">Capítulo 1 de 11</div>
+    </div>
+    <div class="progress-track">
+      <span class="progress-percent" id="progressPercent">0%</span>
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Dots de navegación -->
+  <div class="dots" id="dotsContainer"></div>
+
+  <!-- ============================================================
+       VIEWPORT DE DIAPOSITIVAS
+       ============================================================ -->
+  <div class="slides-viewport" id="slidesViewport">
+
+    <!-- ==================== SLIDE 1: PORTADA ==================== -->
+    <section class="slide" data-slide="0">
+      <div class="portada-header">
+        <div class="institucion">Colegio Montano · Área de Mercadotecnia</div>
+        <h2 class="slide-title">La Organización y las Personas</h2>
+        <div class="materia-badge">
+          <span>Organización</span>
+          <span>Cuarto Bachillerato</span>
+          <span class="amarillo">Unidad 4</span>
+        </div>
+        <p style="max-width:620px; margin:0 auto 6px; color:#5A6B8C;">
+          Un recorrido conceptual y práctico por la relación entre las personas y las organizaciones,
+          desde la mirada del maestro brasileño Idalberto Chiavenato: de "recursos" a "socios estratégicos",
+          y del equilibrio entre lo que aportamos y lo que recibimos a cambio.
+        </p>
+      </div>
+
+      <div class="box nota">
+        <div class="box-title">📘 Nota del Autor</div>
+        <p>Esta guía está diseñada para leerse como un libro de texto interactivo: tómate tu tiempo en cada
+        capítulo, haz clic en las tarjetas para profundizar, y no temas equivocarte en las actividades —
+        el error, bien retroalimentado, es una de las formas más efectivas de aprender teoría organizacional.</p>
+      </div>
+
+      <div class="ficha-tecnica">
+        <div class="ficha-item">
+          <div class="icon">⏱️</div>
+          <div class="label">Tiempo estimado</div>
+          <div class="value">50–60 min</div>
+        </div>
+        <div class="ficha-item">
+          <div class="icon">📊</div>
+          <div class="label">Nivel</div>
+          <div class="value">Intermedio-Alto</div>
+        </div>
+        <div class="ficha-item">
+          <div class="icon">📚</div>
+          <div class="label">Bibliografía base</div>
+          <div class="value">Chiavenato, I. Administración de Recursos Humanos</div>
+        </div>
+        <div class="ficha-item">
+          <div class="icon">👩‍🏫</div>
+          <div class="label">Docente</div>
+          <div class="value">Patricia Oregel</div>
+        </div>
+      </div>
+
+      <div class="box dato" style="margin-top:22px;">
+        <div class="box-title">💡 Antes de empezar</div>
+        <p>Usa las flechas del teclado (← →), los botones inferiores o los puntos de navegación superiores
+        para avanzar. Cada capítulo tiene scroll interno: desplázate dentro de él para leer todo el contenido.</p>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 2: OBJETIVOS Y COMPETENCIAS ==================== -->
+    <section class="slide" data-slide="1">
+      <span class="slide-eyebrow">Capítulo 1</span>
+      <h2 class="slide-title">Objetivos de Aprendizaje y Competencias</h2>
+      <p class="slide-subtitle">Lo que sabrás, lo que sabrás hacer y lo que serás capaz de valorar al concluir esta unidad.</p>
+
+      <div class="competencias-grid">
+        <div class="competencia-card">
+          <h4>🧠 Saber (conceptual)</h4>
+          <ul>
+            <li>Distinguir el enfoque de "personas como recursos" del enfoque de "personas como socias estratégicas".</li>
+            <li>Explicar la relación de reciprocidad entre aportes e incentivos.</li>
+            <li>Definir el contrato psicológico y el equilibrio organizacional.</li>
+          </ul>
+        </div>
+        <div class="competencia-card" style="border-top-color:var(--amarillo);">
+          <h4>🛠️ Saber Hacer (procedimental)</h4>
+          <ul>
+            <li>Diagnosticar situaciones organizacionales reales usando el modelo de Chiavenato.</li>
+            <li>Analizar casos de ruptura del equilibrio laboral y proponer hipótesis causales.</li>
+            <li>Clasificar aportes e incentivos en una matriz organizacional.</li>
+          </ul>
+        </div>
+        <div class="competencia-card" style="border-top-color:var(--correcto);">
+          <h4>🤝 Saber Ser (actitudinal)</h4>
+          <ul>
+            <li>Valorar el rol activo de las personas dentro de las organizaciones.</li>
+            <li>Adoptar una postura crítica y reflexiva frente a las prácticas laborales.</li>
+            <li>Reconocer la importancia del equilibrio entre metas personales y organizacionales.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pregunta-central">
+        🤔 Pregunta provocadora: ¿Las personas trabajan para las organizaciones, o las organizaciones existen
+        gracias a las personas? A lo largo de este libro digital construirás tu propia respuesta fundamentada.
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 3: ACTIVACIÓN Y DIAGNÓSTICO ==================== -->
+    <section class="slide" data-slide="2">
+      <span class="slide-eyebrow">Capítulo 2 · Activación</span>
+      <h2 class="slide-title">Un dilema para empezar a pensar</h2>
+      <p class="slide-subtitle">Antes de leer la teoría, responde con lo que ya intuyes.</p>
+
+      <div class="box ejemplo">
+        <div class="box-title">🏢 Caso breve</div>
+        <p>Marisol lleva tres años trabajando en una empresa de logística. Es puntual, cumple sus metas y nunca
+        ha pedido un aumento. Su jefe piensa: "Marisol es un recurso confiable, como una máquina que nunca falla".
+        Un día, Marisol renuncia sin previo aviso para irse a la competencia, que le ofreció capacitación,
+        participación en decisiones y un salario apenas mayor.</p>
+      </div>
+
+      <p style="font-weight:600; color:var(--azul-principal);">✍️ Tu turno: ¿por qué crees que Marisol renunció, si el salario no era la diferencia principal? Escribe tu postura personal (2-4 líneas).</p>
+
+      <textarea class="reflexion" id="reflexionInicial" placeholder="Escribe aquí tu hipótesis personal..."></textarea>
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="compararTeoria()">Comparar con la teoría</button>
+      </div>
+
+      <div class="feedback-box info" id="feedbackReflexion">
+        <strong>🔎 Retroalimentación conceptual:</strong><br><br>
+        Gracias por compartir tu hipótesis. Lo que describe el caso de Marisol es, en términos de Chiavenato,
+        la diferencia entre tratar a una persona como <span class="termino">recurso</span> (un insumo pasivo que
+        se administra y controla, como el capital o la materia prima) y tratarla como <span class="termino">socia
+        estratégica</span> (un agente activo que aporta conocimiento, esfuerzo y decisiones, y que espera —a cambio—
+        incentivos que van más allá del salario: crecimiento, participación y reconocimiento).
+        Marisol no se fue por dinero: se fue porque su <span class="termino">contrato psicológico</span> —esas
+        expectativas no escritas entre ella y la empresa— dejó de cumplirse. En los siguientes capítulos
+        profundizaremos en cada uno de estos conceptos. Guarda tu hipótesis: la retomaremos en el cierre de la guía.
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 4: LECCIÓN - RECURSOS VS SOCIOS ==================== -->
+    <section class="slide" data-slide="3">
+      <span class="slide-eyebrow">Capítulo 3 · Lección teórica</span>
+      <h2 class="slide-title">Las personas: ¿recursos o socias estratégicas?</h2>
+
+      <p>Durante buena parte del siglo XX, la administración clásica concibió a los trabajadores como
+      <span class="termino" data-glosario="Recursos Humanos (enfoque clásico)">recursos humanos</span>: insumos
+      que, junto con el capital, la maquinaria y la materia prima, debían ser planificados, organizados,
+      dirigidos y controlados para alcanzar los objetivos de la empresa. Bajo esta lógica, las personas eran
+      vistas de manera homogénea y pasiva —igual que un lote de materiales—, valoradas casi exclusivamente
+      por su capacidad de ejecutar tareas dentro de un puesto de trabajo predefinido. El énfasis estaba en la
+      eficiencia, la estandarización y el control jerárquico, y la relación laboral se entendía sobre todo
+      como un intercambio simple: horas de trabajo a cambio de un salario.</p>
+
+      <p>Idalberto Chiavenato, uno de los autores más influyentes en la administración de personal
+      latinoamericana, plantea que esta visión resulta insuficiente para comprender —y mucho menos para
+      dirigir— a las organizaciones contemporáneas. Su propuesta central es un cambio de paradigma: dejar de
+      ver a las personas exclusivamente como <em>recursos</em> para reconocerlas como <span class="termino"
+      data-glosario="Capital Humano / Socios Estratégicos">socias estratégicas</span> del negocio. A diferencia
+      de un recurso material, una persona posee inteligencia, creatividad, valores, emociones, aspiraciones
+      propias y capacidad de decisión autónoma. No se limita a "ejecutar" lo que se le ordena: interpreta,
+      propone, cuestiona y, sobre todo, elige cuánto de su talento y compromiso está dispuesta a entregar a
+      la organización según cómo se sienta tratada por ella.</p>
+
+      <p>Este cambio no es meramente semántico. Tiene consecuencias prácticas profundas: una empresa que
+      trata a su personal como "recurso" tenderá a centrarse en el control, la supervisión estrecha y la
+      reducción de costos laborales. Una empresa que reconoce a su personal como "socio estratégico" invertirá
+      en desarrollo, escuchará sus ideas, compartirá información relevante del negocio y diseñará políticas de
+      incentivos más allá del salario —porque entiende que el compromiso genuino no se impone, se construye.</p>
+
+      <div class="box glosario">
+        <div class="box-title">📖 Concepto Clave</div>
+        <p><strong>Enfoque de personas como socias estratégicas:</strong> perspectiva de la administración de
+        personal que reconoce a los colaboradores como agentes activos, inteligentes y proactivos, capaces de
+        impulsar la competitividad organizacional cuando se les brindan condiciones adecuadas de desarrollo,
+        participación y reconocimiento.</p>
+      </div>
+
+      <h4 style="margin-top:20px; margin-bottom:10px;">Haz clic para profundizar</h4>
+      <div class="flip-grid">
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">⚙️</span> Enfoque de Recurso</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Visión mecanicista: la persona es intercambiable, se le paga por tiempo
+          u output, y su valor se mide en productividad inmediata. Riesgo: alta rotación, baja innovación y
+          desmotivación silenciosa.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🌱</span> Enfoque de Socio Estratégico</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Visión relacional: la persona co-crea valor, participa en decisiones y
+          es tratada como inversión de largo plazo. Riesgo: requiere mayor confianza y sistemas de gestión
+          más sofisticados.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🏭</span> Ejemplo del mundo empresarial</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Empresas como Google o Cementos Progreso en Guatemala invierten en
+          programas de desarrollo de liderazgo y bienestar integral, entendiendo que el talento retenido y
+          motivado es una ventaja competitiva difícil de copiar por la competencia.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">⚠️</span> Advertencia teórica</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Chiavenato aclara que este cambio de enfoque no elimina la necesidad de
+          estructura, normas o evaluación del desempeño: las personas siguen necesitando dirección, pero el
+          estilo de esa dirección cambia radicalmente de la orden unilateral al acuerdo mutuo.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 5: LECCIÓN - OBJETIVOS PERSONALES VS ORGANIZACIONALES ==================== -->
+    <section class="slide" data-slide="4">
+      <span class="slide-eyebrow">Capítulo 4 · Lección teórica</span>
+      <h2 class="slide-title">Objetivos personales y objetivos organizacionales</h2>
+
+      <p>Toda organización existe para alcanzar determinados <span class="termino"
+      data-glosario="Objetivos Organizacionales">objetivos organizacionales</span>: crecer en ventas, expandirse
+      a nuevos mercados, mejorar su rentabilidad o posicionar su marca. Al mismo tiempo, cada persona que
+      trabaja en ella persigue sus propios <span class="termino" data-glosario="Objetivos Personales">objetivos
+      personales</span>: estabilidad económica, desarrollo profesional, reconocimiento social, tiempo para su
+      familia o simplemente aprender un oficio. Chiavenato señala que la gran tarea de la administración de
+      personas no es elegir entre unos objetivos y otros, sino encontrar mecanismos de <em>integración</em> que
+      permitan que, al perseguir sus metas individuales, la persona contribuya simultáneamente a las metas de
+      la empresa.</p>
+
+      <p>Cuando esta integración no ocurre, surge lo que la teoría organizacional llama <em>conflicto de
+      objetivos</em>. Este conflicto puede manifestarse de forma abierta —huelgas, renuncias masivas, denuncias
+      públicas— o de forma silenciosa y mucho más común: baja productividad, ausentismo, apatía, sabotaje sutil
+      de procesos o simplemente "cumplir sin comprometerse" (el fenómeno conocido coloquialmente como
+      <em>quiet quitting</em>). Un vendedor cuyo objetivo personal es aprender para independizarse algún día,
+      pero cuya empresa solo le exige metas de venta sin ofrecerle ninguna capacitación, vivirá una tensión
+      constante entre lo que la empresa espera de él y lo que él espera de su propio desarrollo.</p>
+
+      <p>La alineación efectiva de objetivos requiere que la organización diseñe sistemas donde el logro de
+      la meta organizacional sea, al mismo tiempo, un medio para que la persona alcance su meta personal.
+      Por ejemplo, un esquema de comisiones bien diseñado permite que el vendedor gane más dinero (objetivo
+      personal) exactamente en la misma medida en que la empresa vende más (objetivo organizacional). Cuando
+      esta alineación se logra de forma sostenida, hablamos de una relación de <em>ganar-ganar</em> que reduce
+      significativamente la rotación de personal y aumenta el compromiso genuino.</p>
+
+      <div class="box dato">
+        <div class="box-title">💡 Dato Clave</div>
+        <p>Diversos estudios de clima organizacional en Latinoamérica muestran que el desalineamiento entre
+        objetivos personales y organizacionales —más que el salario bajo por sí solo— es la primera causa
+        declarada de rotación voluntaria del personal joven.</p>
+      </div>
+
+      <h4 style="margin-top:20px; margin-bottom:10px;">Haz clic para profundizar</h4>
+      <div class="flip-grid">
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🎯</span> Objetivo Organizacional</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Meta colectiva y formal de la empresa: incrementar utilidades, ganar
+          participación de mercado, mejorar la calidad del producto o servicio.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🙋</span> Objetivo Personal</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Meta individual y subjetiva del colaborador: estabilidad, aprendizaje,
+          estatus, tiempo libre, sentido de propósito o simplemente sobrevivir económicamente.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🏪</span> Ejemplo empresarial real</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Walmart de México ha usado esquemas de "empleado accionista" para que
+          parte de la compensación de sus colaboradores dependa directamente de las utilidades de la empresa,
+          alineando el interés individual con el resultado corporativo.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🚩</span> Señal de conflicto</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Cuando un colaborador cumple exactamente lo mínimo indicado y nada más
+          ("trabajar según el reglamento"), suele ser un síntoma de que sus objetivos personales dejaron de
+          sentirse conectados con los de la organización.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 6: LECCIÓN - RECIPROCIDAD Y CONTRATO PSICOLÓGICO ==================== -->
+    <section class="slide" data-slide="5">
+      <span class="slide-eyebrow">Capítulo 5 · Lección teórica</span>
+      <h2 class="slide-title">El modelo de reciprocidad: aportes, incentivos y contrato psicológico</h2>
+
+      <p>Chiavenato explica la relación entre la persona y la organización como un intercambio permanente y
+      dinámico al que llama <span class="termino" data-glosario="Teoría del Equilibrio Organizacional">relación
+      de reciprocidad</span>. Por un lado, la persona entrega a la organización sus <span class="termino"
+      data-glosario="Aportes o Contribuciones">aportes</span> (también llamados contribuciones): su tiempo,
+      esfuerzo, conocimientos, habilidades, lealtad y creatividad. Por otro lado, la organización entrega a la
+      persona sus <span class="termino" data-glosario="Incentivos o Alicientes">incentivos</span> (también
+      llamados alicientes): salario, prestaciones, capacitación, reconocimiento, estabilidad y oportunidades
+      de crecimiento. Mientras la persona perciba que sus incentivos son iguales o mayores que sus aportes —en
+      relación con lo que podría obtener en otro lugar—, permanecerá motivada y comprometida con la
+      organización.</p>
+
+      <p>Sin embargo, no todo lo que se intercambia entre la persona y la empresa queda establecido en un
+      contrato de trabajo formal. Existe también un <span class="termino" data-glosario="Contrato Psicológico">
+      contrato psicológico</span>: un conjunto de expectativas implícitas, no escritas, que ambas partes asumen
+      tácitamente. El colaborador espera, por ejemplo, ser tratado con respeto, tener oportunidades reales de
+      ascenso o recibir retroalimentación honesta; la empresa espera, a su vez, lealtad, iniciativa y buena fe
+      más allá de lo estrictamente pactado. Cuando este contrato psicológico se rompe —por ejemplo, cuando se
+      promete una promoción que nunca llega, o cuando la empresa exige lealtad total sin ofrecer estabilidad—,
+      la relación de reciprocidad se deteriora, incluso si el salario formal sigue siendo el mismo.</p>
+
+      <p>Este equilibrio dinámico entre lo que se aporta y lo que se recibe es lo que Chiavenato denomina
+      <em>equilibrio organizacional</em>: la organización se mantiene viable en la medida en que logra que la
+      suma de los incentivos que ofrece sea suficiente para provocar, en cada uno de sus miembros, los aportes
+      que necesita para subsistir y crecer. Cuando ese equilibrio se rompe de manera generalizada, la
+      organización enfrenta crisis de rotación, desmotivación colectiva o incluso conflictos laborales
+      abiertos.</p>
+
+      <div class="box ejemplo">
+        <div class="box-title">🏭 Ejemplo del mundo empresarial</div>
+        <p>En una maquila textil, un operario que percibe que sus largas jornadas (aporte) no se corresponden
+        con oportunidades reales de ascenso o capacitación (incentivo) desarrollará, con el tiempo, un
+        contrato psicológico roto, aunque su salario nominal se mantenga sin cambios.</p>
+      </div>
+
+      <h4 style="margin-top:20px; margin-bottom:10px;">Haz clic para profundizar</h4>
+      <div class="flip-grid">
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">📤</span> Aportes (inputs)</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Lo que la persona entrega: tiempo, esfuerzo físico e intelectual,
+          conocimiento técnico, lealtad, puntualidad, creatividad y disposición al cambio.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">📥</span> Incentivos (outputs)</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Lo que la organización entrega: salario, prestaciones de ley y
+          extralegales, capacitación, seguridad laboral, reconocimiento y posibilidad de desarrollo.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">🤝</span> Contrato Psicológico</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Expectativas mutuas no escritas entre persona y organización. Su
+          ruptura silenciosa es una de las causas más frecuentes —y menos visibles— de renuncia voluntaria.</div>
+        </div>
+        <div class="flip-card" onclick="toggleFlip(this)">
+          <div class="flip-card-front"><span><span class="icon">⚖️</span> Equilibrio Organizacional</span><span class="chevron">▾</span></div>
+          <div class="flip-card-back">Estado en que los incentivos ofrecidos son suficientes para provocar
+          los aportes necesarios para la supervivencia y crecimiento de la organización.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 7: TALLER DE PRÁCTICA (OPCIÓN MÚLTIPLE) ==================== -->
+    <section class="slide" data-slide="6">
+      <span class="slide-eyebrow">Capítulo 6 · Taller de práctica</span>
+      <h2 class="slide-title">Taller de identificación conceptual</h2>
+      <p class="slide-subtitle">Lee cada situación con cuidado antes de responder. Puedes reintentar si te equivocas.</p>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">1. Una empresa despide a un colaborador de bajo rendimiento y lo
+        reemplaza de inmediato "como quien cambia una pieza de una máquina", sin considerar sus años de
+        experiencia ni su conocimiento acumulado del negocio. ¿Qué enfoque está aplicando esta empresa?</div>
+        <div class="opciones" id="q1-opciones">
+          <button class="opcion" onclick="responder(this,'q1',false)">Enfoque de socio estratégico, porque prioriza la eficiencia del negocio.</button>
+          <button class="opcion" onclick="responder(this,'q1',true)">Enfoque de personas como recurso, porque trata al colaborador como un insumo intercambiable.</button>
+          <button class="opcion" onclick="responder(this,'q1',false)">Equilibrio organizacional, porque busca mantener la productividad.</button>
+          <button class="opcion" onclick="responder(this,'q1',false)">Contrato psicológico, porque hay una expectativa implícita de reemplazo.</button>
+        </div>
+        <div class="feedback-box" id="q1-feedback"></div>
+      </div>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">2. Un empleado siente que ha dado más de lo pactado en su contrato
+        (horas extra sin pago, disponibilidad total de fin de semana) y, a cambio, la empresa ni siquiera le
+        agradece o reconoce ese esfuerzo. Según el modelo de reciprocidad, ¿qué está ocurriendo?</div>
+        <div class="opciones" id="q2-opciones">
+          <button class="opcion" onclick="responder(this,'q2',false)">Un aumento de los incentivos organizacionales.</button>
+          <button class="opcion" onclick="responder(this,'q2',true)">Un desequilibrio entre aportes e incentivos que puede romper el contrato psicológico.</button>
+          <button class="opcion" onclick="responder(this,'q2',false)">Una correcta alineación de objetivos personales y organizacionales.</button>
+          <button class="opcion" onclick="responder(this,'q2',false)">Un ejemplo del enfoque de socio estratégico bien aplicado.</button>
+        </div>
+        <div class="feedback-box" id="q2-feedback"></div>
+      </div>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">3. Una empresa lanza un programa de "embajadores de innovación" donde
+        los colaboradores proponen ideas, las presentan a la dirección y reciben bonos y reconocimiento
+        público por las que se implementan. ¿Qué concepto ilustra mejor esta práctica?</div>
+        <div class="opciones" id="q3-opciones">
+          <button class="opcion" onclick="responder(this,'q3',false)">Personas como recurso homogéneo.</button>
+          <button class="opcion" onclick="responder(this,'q3',false)">Conflicto irreconciliable de objetivos.</button>
+          <button class="opcion" onclick="responder(this,'q3',true)">Integración de objetivos personales y organizacionales mediante incentivos alineados.</button>
+          <button class="opcion" onclick="responder(this,'q3',false)">Ruptura del contrato psicológico.</button>
+        </div>
+        <div class="feedback-box" id="q3-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 8: ESTUDIO DE CASO ==================== -->
+    <section class="slide" data-slide="7">
+      <span class="slide-eyebrow">Capítulo 7 · Estudio de caso</span>
+      <h2 class="slide-title">Caso: ruptura del equilibrio laboral en "Distribuidora del Valle"</h2>
+
+      <div class="box ejemplo">
+        <div class="box-title">🏢 Caso de estudio</div>
+        <p>Distribuidora del Valle es una empresa guatemalteca de logística y distribución de alimentos con
+        120 empleados. Durante años tuvo una rotación de personal muy baja y buen ambiente laboral. Hace ocho
+        meses, la gerencia —presionada por la competencia— decidió aumentar en un 30% las metas de entregas
+        diarias sin ampliar la flota de vehículos ni contratar más personal, argumentando que "el equipo
+        actual es capaz de dar más de sí". Al mismo tiempo, canceló el bono de puntualidad que existía desde
+        hacía cinco años, alegando recorte de costos. En los últimos tres meses, ocho pilotos y dos
+        supervisores de bodega han renunciado, y las quejas informales sobre "cansancio" y "falta de
+        reconocimiento" se han vuelto frecuentes en los pasillos.</p>
+      </div>
+
+      <p style="font-weight:600; color:var(--azul-principal);">Matriz de diagnóstico causa-efecto: selecciona
+      la hipótesis que consideres más sólida para cada pregunta.</p>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">A. ¿Cuál es la causa más probable, desde la teoría de la reciprocidad,
+        del aumento de renuncias?</div>
+        <div class="opciones" id="c1-opciones">
+          <button class="opcion" onclick="responder(this,'c1',false)">La empresa es demasiado grande para mantener el control.</button>
+          <button class="opcion" onclick="responder(this,'c1',true)">Los aportes exigidos (más entregas) aumentaron mientras los incentivos (bono) disminuyeron, rompiendo el equilibrio.</button>
+          <button class="opcion" onclick="responder(this,'c1',false)">Los pilotos tienen objetivos personales incompatibles con cualquier empresa de logística.</button>
+        </div>
+        <div class="feedback-box" id="c1-feedback"></div>
+      </div>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">B. ¿Qué elemento del contrato psicológico parece haberse violado con
+        mayor claridad en este caso?</div>
+        <div class="opciones" id="c2-opciones">
+          <button class="opcion" onclick="responder(this,'c2',false)">El derecho a vacaciones pagadas establecido por ley.</button>
+          <button class="opcion" onclick="responder(this,'c2',true)">La expectativa implícita de que el esfuerzo adicional sería reconocido de alguna forma.</button>
+          <button class="opcion" onclick="responder(this,'c2',false)">El horario formal de entrada y salida establecido en el contrato escrito.</button>
+        </div>
+        <div class="feedback-box" id="c2-feedback"></div>
+      </div>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">C. Si tú fueras la persona encargada de Recursos Humanos, ¿cuál sería
+        la intervención más alineada con la teoría estudiada?</div>
+        <div class="opciones" id="c3-opciones">
+          <button class="opcion" onclick="responder(this,'c3',false)">Contratar más personal de reemplazo rápidamente para cubrir las rutas vacantes.</button>
+          <button class="opcion" onclick="responder(this,'c3',false)">Aumentar aún más las metas para compensar la pérdida de personal.</button>
+          <button class="opcion" onclick="responder(this,'c3',true)">Revisar el balance entre las nuevas exigencias y los incentivos ofrecidos, y restablecer canales de reconocimiento.</button>
+        </div>
+        <div class="feedback-box" id="c3-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 9: LABORATORIO / MATRIZ DINÁMICA ==================== -->
+    <section class="slide" data-slide="8">
+      <span class="slide-eyebrow">Capítulo 8 · Laboratorio de aplicación</span>
+      <h2 class="slide-title">Matriz dinámica: Aportes vs. Incentivos</h2>
+      <p class="slide-subtitle">Toca cada celda para revelar su contenido. Debes explorar las 6 celdas para desbloquear la conclusión del laboratorio.</p>
+
+      <table class="matriz">
+        <thead>
+          <tr>
+            <th>Ámbito</th>
+            <th>Aporte típico de la persona</th>
+            <th>Incentivo típico de la organización</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:700; color:var(--azul-principal);">Tiempo y esfuerzo</td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Jornada laboral completa, disponibilidad y puntualidad sostenida."></td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Salario base, horas extra pagadas y horarios flexibles cuando es posible."></td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--azul-principal);">Conocimiento</td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Experiencia técnica, ideas de mejora y dominio de procesos internos."></td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Capacitación continua, becas y acceso a nuevas herramientas de trabajo."></td>
+          </tr>
+          <tr>
+            <td style="font-weight:700; color:var(--azul-principal);">Compromiso emocional</td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Lealtad, buena disposición ante cambios y defensa de la reputación de la empresa."></td>
+            <td class="cell-clickable" onclick="revealCell(this)" data-content="Reconocimiento público, estabilidad laboral y un ambiente de respeto mutuo."></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="lab-progress" id="labProgress">Celdas exploradas: 0 de 6</div>
+
+      <div class="lab-conclusion" id="labConclusion">
+        <div class="box glosario">
+          <div class="box-title">🧪 Conclusión Sintética del Laboratorio</div>
+          <p>Como puedes observar, cada aporte de la persona tiene, idealmente, un incentivo correspondiente
+          que la organización debería ofrecer a cambio. Cuando alguna de estas columnas queda vacía o
+          debilitada de forma sostenida —por ejemplo, exigir compromiso emocional sin ofrecer nunca
+          reconocimiento—, el equilibrio organizacional comienza a deteriorarse, tal como viste en el caso de
+          Distribuidora del Valle.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 10: EVALUACIÓN SUMATIVA ==================== -->
+    <section class="slide" data-slide="9">
+      <span class="slide-eyebrow">Capítulo 9 · Evaluación sumativa</span>
+      <h2 class="slide-title">Reto integrador: juicio situacional</h2>
+      <p class="slide-subtitle">Esta pregunta integra todo lo aprendido. Analiza cuidadosamente cada opción antes de responder.</p>
+
+      <div class="pregunta-block">
+        <div class="pregunta-enunciado">Eres el nuevo gerente de una pequeña empresa familiar de 25
+        empleados. Notas que el dueño anterior trataba al personal estrictamente como "mano de obra", sin
+        espacios de opinión ni desarrollo, pero pagaba salarios ligeramente por encima del mercado. La
+        rotación es baja, pero la innovación es prácticamente nula y nadie propone mejoras. ¿Cuál es la
+        estrategia más coherente con la teoría de Chiavenato para transformar esta cultura sin generar una
+        crisis financiera inmediata?</div>
+        <div class="opciones" id="reto-opciones">
+          <button class="opcion" onclick="responderReto(this,false)">Mantener todo igual, ya que el salario alto compensa la falta de espacios de opinión.</button>
+          <button class="opcion" onclick="responderReto(this,false)">Eliminar el salario competitivo y usarlo para financiar bonos de innovación inmediatos.</button>
+          <button class="opcion" onclick="responderReto(this,true)">Introducir gradualmente incentivos no monetarios (participación, reconocimiento, capacitación) que empiecen a tratar al personal como socio estratégico sin desmontar el incentivo salarial ya existente.</button>
+          <button class="opcion" onclick="responderReto(this,false)">Aumentar las metas de producción para "activar" a un personal que se percibe cómodo.</button>
+        </div>
+        <div class="feedback-box" id="reto-feedback"></div>
+      </div>
+
+      <div class="score-panel" id="scorePanel">
+        <div class="score-num" id="scoreNum">0/1</div>
+        <div class="score-label">Reto integrador completado</div>
+        <button class="btn btn-secondary" onclick="reiniciarReto()">🔄 Reiniciar reto</button>
+      </div>
+    </section>
+
+    <!-- ==================== SLIDE 11: SÍNTESIS Y CIERRE ==================== -->
+    <section class="slide" data-slide="10">
+      <span class="slide-eyebrow">Capítulo 10 · Síntesis y cierre</span>
+      <h2 class="slide-title">Resumen ejecutivo y autoevaluación</h2>
+
+      <ol class="resumen-lista">
+        <li><span class="numero">1</span> Las organizaciones pueden tratar a las personas como recursos
+        pasivos o como socias estratégicas activas; este enfoque determina el tipo de compromiso que reciben.</li>
+        <li><span class="numero">2</span> Los objetivos personales y organizacionales deben integrarse, no
+        oponerse; el conflicto no resuelto entre ambos genera baja productividad y rotación.</li>
+        <li><span class="numero">3</span> La relación entre persona y organización es de reciprocidad:
+        aportes (lo que la persona entrega) a cambio de incentivos (lo que la organización ofrece).</li>
+        <li><span class="numero">4</span> El contrato psicológico son expectativas implícitas y no escritas
+        que, cuando se rompen, deterioran la relación laboral aunque el contrato formal siga vigente.</li>
+        <li><span class="numero">5</span> El equilibrio organizacional se sostiene cuando los incentivos son
+        suficientes para provocar los aportes que la organización necesita para subsistir y crecer.</li>
+      </ol>
+
+      <h4 style="margin-top:22px; margin-bottom:10px;">✅ Lista de cotejo: marca lo que ya dominas</h4>
+      <div class="checklist" id="checklist">
+        <label class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span>Puedo explicar la diferencia entre personas como recurso y como socias estratégicas.</span></label>
+        <label class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span>Puedo identificar un conflicto entre objetivos personales y organizacionales en un caso real.</span></label>
+        <label class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span>Puedo distinguir un aporte de un incentivo dentro de la relación de reciprocidad.</span></label>
+        <label class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span>Puedo definir el contrato psicológico y dar un ejemplo de su ruptura.</span></label>
+        <label class="check-item"><input type="checkbox" onchange="toggleCheck(this)"><span>Puedo argumentar cuándo una organización está en equilibrio o desequilibrio.</span></label>
+      </div>
+
+      <div class="cierre-institucional">
+        <p>"Las organizaciones no funcionan por sí solas: funcionan porque las personas deciden, cada día,
+        cuánto de sí mismas quieren entregarles." — Reflexión final, Unidad 4</p>
+        <div class="firma">Colegio Montano · Organización, Cuarto Bachillerato · Prof. Patricia Oregel</div>
+      </div>
+
+      <p style="margin-top:16px; text-align:center; color:#7C8AA5; font-size:0.85rem;">
+        📌 En la siguiente lección exploraremos el proceso de reclutamiento y selección de personal
+        bajo este mismo enfoque estratégico. ¡Nos vemos en la Unidad 5!
+      </p>
+    </section>
+
+  </div>
+
+  <!-- ============================================================
+       CONTROLES INFERIORES DE NAVEGACIÓN
+       ============================================================ -->
+  <div class="controls">
+    <button class="btn btn-secondary" id="prevBtn" onclick="cambiarSlide(-1)">← Anterior</button>
+    <span class="hint-key">Usa las flechas ← → del teclado</span>
+    <button class="btn btn-primary" id="nextBtn" onclick="cambiarSlide(1)">Siguiente →</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   BLOQUE JS 1: ESTADO GLOBAL Y CONFIGURACIÓN
+   ============================================================ */
+const TOTAL_SLIDES = 11;
+let currentSlide = 0;
+
+const slidesEls = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dotsContainer');
+const chapterCounter = document.getElementById('chapterCounter');
+const progressFill = document.getElementById('progressFill');
+const progressPercent = document.getElementById('progressPercent');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+/* Construir los dots dinámicamente */
+for(let i=0;i<TOTAL_SLIDES;i++){
+  const dot = document.createElement('button');
+  dot.className = 'dot';
+  dot.setAttribute('aria-label', 'Ir al capítulo ' + (i+1));
+  dot.addEventListener('click', () => irASlide(i));
+  dotsContainer.appendChild(dot);
+}
+const dotsEls = document.querySelectorAll('.dot');
+
+/* ============================================================
+   BLOQUE JS 2: NAVEGACIÓN ENTRE DIAPOSITIVAS
+   ============================================================ */
+function actualizarUI(){
+  slidesEls.forEach((slide, idx) => {
+    slide.classList.remove('active','prev');
+    if(idx === currentSlide){
+      slide.classList.add('active');
+      slide.scrollTop = 0;
+    } else if(idx < currentSlide){
+      slide.classList.add('prev');
+    }
+  });
+
+  dotsEls.forEach((dot, idx) => {
+    dot.classList.remove('active','done');
+    if(idx === currentSlide) dot.classList.add('active');
+    else if(idx < currentSlide) dot.classList.add('done');
+  });
+
+  chapterCounter.textContent = `Capítulo ${currentSlide+1} de ${TOTAL_SLIDES}`;
+  const pct = Math.round(((currentSlide+1)/TOTAL_SLIDES)*100);
+  progressFill.style.width = pct + '%';
+  progressPercent.textContent = pct + '%';
+
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.textContent = currentSlide === TOTAL_SLIDES-1 ? 'Fin ✓' : 'Siguiente →';
+  nextBtn.disabled = currentSlide === TOTAL_SLIDES-1;
+}
+
+function cambiarSlide(direccion){
+  const nuevo = currentSlide + direccion;
+  if(nuevo < 0 || nuevo >= TOTAL_SLIDES) return;
+  currentSlide = nuevo;
+  actualizarUI();
+}
+
+function irASlide(idx){
+  if(idx < 0 || idx >= TOTAL_SLIDES) return;
+  currentSlide = idx;
+  actualizarUI();
+}
+
+/* Navegación con teclado */
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowRight') cambiarSlide(1);
+  if(e.key === 'ArrowLeft') cambiarSlide(-1);
+});
+
+/* Inicializar */
+actualizarUI();
+
+/* ============================================================
+   BLOQUE JS 3: SLIDE 3 - ACTIVACIÓN / DIAGNÓSTICO INICIAL
+   ============================================================ */
+function compararTeoria(){
+  const feedback = document.getElementById('feedbackReflexion');
+  const texto = document.getElementById('reflexionInicial').value.trim();
+  if(texto.length === 0){
+    alert('Escribe primero tu hipótesis antes de comparar con la teoría 🙂');
+    return;
+  }
+  feedback.classList.add('show');
+}
+
+/* ============================================================
+   BLOQUE JS 4: TARJETAS "CLIC PARA PROFUNDIZAR" (FLIP CARDS)
+   ============================================================ */
+function toggleFlip(card){
+  card.classList.toggle('open');
+}
+
+/* ============================================================
+   BLOQUE JS 5: TALLER Y ESTUDIO DE CASO - OPCIÓN MÚLTIPLE
+   CON RETROALIMENTACIÓN PEDAGÓGICA Y REINTENTOS
+   ============================================================ */
+const explicaciones = {
+  q1: {
+    correcta: "¡Correcto! Tratar a un colaborador como pieza reemplazable, ignorando su conocimiento acumulado, es la esencia del enfoque de 'personas como recurso': se valora la función, no a la persona.",
+    incorrecta: "No es la opción más precisa. Recuerda: el enfoque de recurso trata a la persona como un insumo intercambiable, sin considerar su valor único acumulado con el tiempo. Vuelve a intentarlo."
+  },
+  q2: {
+    correcta: "¡Exacto! Cuando los aportes (esfuerzo extra) superan a los incentivos (reconocimiento, pago), el equilibrio de la relación de reciprocidad se rompe, afectando también el contrato psicológico implícito.",
+    incorrecta: "Revisa de nuevo: la clave está en comparar lo que la persona entrega (aportes) contra lo que recibe (incentivos). Si el balance es negativo y sostenido, hay un problema de equilibrio. Inténtalo otra vez."
+  },
+  q3: {
+    correcta: "¡Muy bien! Este tipo de programas conecta el interés personal (reconocimiento, bonos) con el interés organizacional (innovación), ilustrando una integración exitosa de objetivos.",
+    incorrecta: "No del todo. Piensa en qué sucede cuando una empresa premia las ideas de sus colaboradores: ¿se benefician solo ellos, solo la empresa, o ambos a la vez? Vuelve a intentarlo."
+  },
+  c1: {
+    correcta: "Correcto: el aumento de exigencias sin incentivos compensatorios rompe directamente el equilibrio entre aportes e incentivos descrito por Chiavenato.",
+    incorrecta: "Esa hipótesis no se sostiene con la teoría estudiada. Enfócate en lo que cambió: las exigencias subieron y un incentivo (el bono) desapareció. Intenta de nuevo."
+  },
+  c2: {
+    correcta: "Correcto: la expectativa de reconocimiento ante el esfuerzo adicional es precisamente el tipo de acuerdo implícito que conforma un contrato psicológico.",
+    incorrecta: "Esa opción corresponde a un elemento del contrato formal, no del contrato psicológico (que es implícito, no escrito). Vuelve a intentarlo."
+  },
+  c3: {
+    correcta: "Correcto: la intervención más coherente ataca la causa raíz —el desequilibrio entre exigencias e incentivos— en lugar de solo cubrir síntomas.",
+    incorrecta: "Esa opción probablemente profundizaría el desequilibrio en lugar de resolverlo. Piensa en restaurar el balance entre aportes e incentivos. Inténtalo de nuevo."
+  }
+};
+
+function responder(btnEl, preguntaId, esCorrecta){
+  const contenedor = document.getElementById(preguntaId + '-opciones');
+  const feedback = document.getElementById(preguntaId + '-feedback');
+  const botones = contenedor.querySelectorAll('.opcion');
+
+  botones.forEach(b => b.classList.add('disabled'));
+
+  if(esCorrecta){
+    btnEl.classList.add('correcta');
+    feedback.className = 'feedback-box ok show';
+    feedback.innerHTML = '<strong>✅ ¡Correcto!</strong><br>' + explicaciones[preguntaId].correcta;
+  } else {
+    btnEl.classList.add('incorrecta');
+    feedback.className = 'feedback-box bad show';
+    feedback.innerHTML = '<strong>❌ No es la mejor respuesta.</strong><br>' + explicaciones[preguntaId].incorrecta +
+      '<br><br><button class="btn btn-secondary retry-btn" onclick="reintentar(\'' + preguntaId + '\')">🔄 Reintentar</button>';
+  }
+}
+
+function reintentar(preguntaId){
+  const contenedor = document.getElementById(preguntaId + '-opciones');
+  const feedback = document.getElementById(preguntaId + '-feedback');
+  const botones = contenedor.querySelectorAll('.opcion');
+  botones.forEach(b => {
+    b.classList.remove('disabled','correcta','incorrecta');
+  });
+  feedback.classList.remove('show');
+  feedback.innerHTML = '';
+}
+
+/* ============================================================
+   BLOQUE JS 6: LABORATORIO / MATRIZ DINÁMICA
+   ============================================================ */
+let celdasReveladas = 0;
+const TOTAL_CELDAS = 6;
+
+function revealCell(td){
+  if(td.classList.contains('revealed')) return;
+  td.classList.add('revealed');
+  td.textContent = td.getAttribute('data-content');
+  celdasReveladas++;
+  document.getElementById('labProgress').textContent = `Celdas exploradas: ${celdasReveladas} de ${TOTAL_CELDAS}`;
+  if(celdasReveladas === TOTAL_CELDAS){
+    document.getElementById('labConclusion').classList.add('show');
+  }
+}
+
+/* ============================================================
+   BLOQUE JS 7: RETO INTEGRADOR (EVALUACIÓN SUMATIVA)
+   ============================================================ */
+function responderReto(btnEl, esCorrecta){
+  const contenedor = document.getElementById('reto-opciones');
+  const feedback = document.getElementById('reto-feedback');
+  const scorePanel = document.getElementById('scorePanel');
+  const scoreNum = document.getElementById('scoreNum');
+  const botones = contenedor.querySelectorAll('.opcion');
+
+  botones.forEach(b => b.classList.add('disabled'));
+
+  if(esCorrecta){
+    btnEl.classList.add('correcta');
+    feedback.className = 'feedback-box ok show';
+    feedback.innerHTML = '<strong>✅ ¡Excelente juicio situacional!</strong><br>Esta estrategia respeta el equilibrio organizacional ya existente (el salario competitivo) mientras evoluciona gradualmente hacia el enfoque de socio estratégico, evitando una ruptura brusca del contrato psicológico actual.';
+    scoreNum.textContent = '1/1';
+  } else {
+    btnEl.classList.add('incorrecta');
+    feedback.className = 'feedback-box bad show';
+    feedback.innerHTML = '<strong>❌ Esta opción no es la más coherente con la teoría.</strong><br>Piensa en qué estrategia mantiene el equilibrio ya alcanzado (salario competitivo) mientras suma, gradualmente, los elementos que faltan del enfoque de socio estratégico.';
+    scoreNum.textContent = '0/1';
+  }
+  scorePanel.classList.add('show');
+}
+
+function reiniciarReto(){
+  const contenedor = document.getElementById('reto-opciones');
+  const feedback = document.getElementById('reto-feedback');
+  const scorePanel = document.getElementById('scorePanel');
+  const botones = contenedor.querySelectorAll('.opcion');
+  botones.forEach(b => b.classList.remove('disabled','correcta','incorrecta'));
+  feedback.classList.remove('show');
+  feedback.innerHTML = '';
+  scorePanel.classList.remove('show');
+}
+
+/* ============================================================
+   BLOQUE JS 8: CHECKLIST DE AUTOEVALUACIÓN FINAL
+   ============================================================ */
+function toggleCheck(checkbox){
+  const item = checkbox.closest('.check-item');
+  item.classList.toggle('checked', checkbox.checked);
+}
+</script>
+
+</body>
+</html>
